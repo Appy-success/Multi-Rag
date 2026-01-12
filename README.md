@@ -65,18 +65,97 @@ product_index="your-product-index-name"
 maunal_index="your-manual-index-name"
 ```
 
-### Step 5: Prepare Your Data (Optional)
+### Step 5: Create Search Indexes from Local Data
 
-If you want to create your own indexes:
+The application includes pre-built Jupyter notebooks to create Azure AI Search indexes from your local data files. This step is essential for setting up the RAG (Retrieval-Augmented Generation) functionality.
 
-1. **Customer Data**: Place JSON files in `data/customer_info/`
-2. **Product Data**: Place CSV files in `data/product_info/`
-3. **Manual Data**: Place Markdown files in `data/manual_info/manuals/`
+#### 📋 Prerequisites for Index Creation
+- Azure AI Search service deployed
+- Azure OpenAI service with embedding model deployed
+- Valid credentials configured in `.env` file
 
-Use the provided Jupyter notebooks to create Azure AI Search indexes:
-- `data/customer_info/create-cosmos-db.ipynb`
-- `data/product_info/create-azure-search.ipynb`
-- `data/manual_info/contoso-manuals-index.ipynb`
+#### 🔧 Creating Indexes Using Jupyter Notebooks
+
+##### 1. **Product Search Index** (`create-azure-search.ipynb`)
+This notebook creates a searchable index from your product catalog data:
+
+**Location:** [`data/product_info/create-azure-search.ipynb`](data/product_info/create-azure-search.ipynb)
+
+**Purpose:** 
+- Processes the `products.csv` file containing product information
+- Creates vector embeddings for product descriptions
+- Sets up Azure AI Search index with semantic search capabilities
+
+**Steps:**
+1. Open the notebook in Jupyter or VS Code
+2. Ensure your `.env` file contains valid Azure credentials
+3. Run all cells sequentially
+4. The notebook will automatically:
+   - Load product data from `products.csv`
+   - Generate embeddings using Azure OpenAI
+   - Create and populate the search index
+   - Verify index creation and document count
+
+##### 2. **Manual Documentation Index** (`contoso-manuals-index.ipynb`)
+This notebook creates a searchable index from product manuals and documentation:
+
+**Location:** [`data/manual_info/contoso-manuals-index.ipynb`](data/manual_info/contoso-manuals-index.ipynb)
+
+**Purpose:**
+- Processes all Markdown files in the `manuals/` folder
+- Creates chunked embeddings for better retrieval
+- Enables semantic search across product documentation
+
+**Steps:**
+1. Place your manual files (`.md` format) in `data/manual_info/manuals/`
+2. Open the notebook in your preferred environment
+3. Execute all cells in order
+4. The notebook will:
+   - Scan all manual files in the directory
+   - Process and chunk the content for optimal search
+   - Generate embeddings and create the search index
+   - Validate the index with sample queries
+
+#### 📂 Data Structure Requirements
+
+**For Product Index:**
+```
+data/product_info/
+├── create-azure-search.ipynb
+└── products.csv (your product catalog)
+```
+
+**For Manual Index:**
+```
+data/manual_info/
+├── contoso-manuals-index.ipynb
+└── manuals/
+    ├── product_info_1.md
+    ├── product_info_2.md
+    └── ... (your manual files)
+```
+
+#### ✅ Verification Steps
+
+After running the notebooks, verify your indexes:
+
+1. **Check Azure Portal:** Navigate to your Azure AI Search service to confirm indexes are created
+2. **Test Search Queries:** Use the Azure Search Explorer to test sample queries
+3. **Run the Application:** Start the Streamlit app and test both assistants
+
+#### 🔍 Index Configuration Details
+
+Both notebooks create indexes with:
+- **Vector search capabilities** for semantic similarity
+- **Keyword search** for exact matches
+- **Hybrid search** combining both approaches
+- **Chunking strategies** optimized for RAG retrieval
+
+#### 📝 Additional Setup Notes
+
+1. **Customer Data Index** (Optional): Use `data/customer_info/create-cosmos-db.ipynb` if you need customer information storage in Cosmos DB
+2. **Environment Variables:** Ensure all required variables are set in your `.env` file before running notebooks
+3. **Model Dependencies:** Both notebooks require access to your deployed embedding model in Azure OpenAI
 
 ## 🚀 Running the Application
 
